@@ -1,25 +1,199 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.10.35013.160
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project Final", "Project Final\Project Final.csproj", "{FB41848A-B392-4EA4-9C06-CDD807066EB9}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB41848A-B392-4EA4-9C06-CDD807066EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB41848A-B392-4EA4-9C06-CDD807066EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB41848A-B392-4EA4-9C06-CDD807066EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB41848A-B392-4EA4-9C06-CDD807066EB9}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {5AB18A2D-B23E-4197-A85F-7AA685E3A975}
-	EndGlobalSection
-EndGlobal
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Project_Final
+{
+    class MainCar
+    {
+        static void Main()
+        {
+            List<Ticket> Summarysummarize = new List<Ticket>();
+            HashSet<string> Seats = new HashSet<string>();
+            bool continueProgram = true;
+
+            string[] movies = {"Teeyod","Teeyod2","Teeyod3","Teeyod4","Teeyod5","Dom","Dom2","Dom3","Dom4","Dom5"};
+            string[] times = { "12:00 P.M", "15:00 P.M", "17:30 P.M", "18:00 P.M" };
+            while (continueProgram)
+            {
+                Console.WriteLine("Welcome to Movie \n What movie are you watchig");
+                Console.WriteLine("Movie for Today");
+                for (int i = 0; i < 5; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {movies[i]}");
+                }
+
+                Console.WriteLine("\nMovie for Tomorrow");
+                for (int i = 5; i < 10; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {movies[i]}");
+                }
+
+                Console.Write("\nWhat number are you watching? : ");
+                if (!int.TryParse(Console.ReadLine(), out int scheduleChoice) || scheduleChoice < 1 || scheduleChoice > 10)
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    continue;
+                }
+
+                Console.WriteLine("\nWhat time you watch");
+                for (int i = 0; i < 4; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {times[i]}");
+                }
+
+                Console.Write("\nWhat times are you watching? : ");
+                if (!int.TryParse(Console.ReadLine(), out int scheduleChoice1) || scheduleChoice1 < 1 || scheduleChoice1 > 4)
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                }
+
+                Console.Write("\nHow many tickets do you want to buy? : ");
+                if (!int.TryParse (Console.ReadLine(), out int ticketCount) || ticketCount < 1)
+                {
+                    Console.WriteLine("Invalid ticket count. Please try again.");
+                    continue;
+                }
+
+                Console.WriteLine("\nSelect Zone : ");
+                Console.WriteLine("1.Economy 120 THB");
+                Console.WriteLine("2.Regular 160 THB");
+                Console.WriteLine("3.VIP 220 THB");
+                Console.Write("\nEnter your seat zone : ");
+                if (!int.TryParse(Console.ReadLine(),out int zoneChoice) || zoneChoice < 1 || zoneChoice > 3)
+                {
+                    Console.WriteLine("Invalid choice. Defualting to Regular");
+                    zoneChoice = 0;
+                }
+
+                int ticketPrice = 0;
+                string selectzone = "";
+                switch (zoneChoice)
+                {
+                    case 1:
+                        selectzone = "Economy";
+                        Console.WriteLine("You select Economy");
+                        Console.WriteLine("TicketPrice is 120");
+                        ticketPrice = 120;
+                        break;
+                    case 2:
+                        selectzone = "Regular";
+                        Console.WriteLine("You select Regular");
+                        Console.WriteLine("TicketPrice is 160");
+                        ticketPrice = 160;
+                        break;
+                    case 3:
+                        selectzone = "VIP";
+                        Console.WriteLine("You select VIP");
+                        Console.WriteLine("TicketPrice is 220");
+                        ticketPrice = 220;
+                        break;
+                    default:
+                        Console.WriteLine("Pleaseeee choose ja");
+                        break;
+                }
+
+                for (int i = 0; i < ticketCount; i++)
+                {
+                    string seatNumbers;
+                    while (true)
+                    {
+                        Console.Write($"Enter seat number for Ticket {i + 1} (A1-A10) (B1-B10) : ");
+                        seatNumbers = Console.ReadLine();
+
+                        if (string.IsNullOrWhiteSpace(seatNumbers))
+                        {
+                            Console.WriteLine("Invalid seat number. Please try again");
+                            continue;
+                        }
+
+                        if (Seats.Contains(seatNumbers))
+                        {
+                            Console.WriteLine($"Seat {seatNumbers} is alraedy booked. Please choose a anothor seat");
+                        }
+                        else
+                        {
+                            Seats.Add(seatNumbers);
+                            break;
+                        }
+                    }
+
+                    Ticket ticket = new Ticket(movies[scheduleChoice - 1], times[scheduleChoice1 - 1], ticketPrice, selectzone, seatNumbers);
+                    Summarysummarize.Add(ticket);
+                }
+
+                int totalPrice = ticketCount * ticketPrice;
+                if (ticketCount > 2)
+                {
+                    double discount = 0.10;
+                    totalPrice = (int)(totalPrice * (1 - discount));
+                    Console.WriteLine($"\nYou get a 10% discount! Total price after discount: {totalPrice} THB");
+                }
+                else
+                {
+                    Console.WriteLine($"\nTotal price: {totalPrice} THB");
+                }
+
+                while (true)
+                {
+                    Console.Write("\nConfirm your booking? (Yes/No/Cancel): ");
+                    string userResponse = Console.ReadLine().ToLower();
+
+                    if (userResponse == "yes")
+                    {
+                        Console.WriteLine("\nThank you for your booking!");
+                        Console.WriteLine("\n---- All Booking Details ----");
+                        foreach (var booking in Summarysummarize)
+                        {
+                            Console.WriteLine(booking.GetSummary());
+                        }
+
+                        Console.WriteLine("\nGoodbye!");
+                        continueProgram = false ;
+                        break;
+                    }
+                    else if (userResponse == "no")
+                    {
+                        Console.WriteLine("\nStarting a new booking...\n");
+                        break;
+                    }
+                    else if (userResponse == "cancel")
+                    {
+                        Console.WriteLine("\nBooking cancelled. Exiting program.");
+                        continueProgram = false;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nPlease type yes/no/cancel");
+                    }
+                }
+            }
+        }
+    }
+    class Ticket
+    {
+        public string Movie { get; private set; }
+        public string Time { get; private set; }
+        public int Price { get; private set; }
+        public string Zone { get; private set; }
+        public string SeatNumber { get; private set; }
+
+        public Ticket(string movie, string time, int price, string zone, string seatNumber)
+        {
+            Movie = movie;
+            Time = time;
+            Price = price;
+            Zone = zone;
+            SeatNumber = seatNumber;
+        }
+
+        public string GetSummary()
+        {
+            return $"Movie: {Movie}, Time: {Time}, Price: {Price} THB, Zone: {Zone}, Seat: {SeatNumber}";
+        }
+    }
+}
